@@ -1,284 +1,59 @@
-//Initlize the total cash and cash per second of the player
-			var cash = 0;			
-			var cashps = 0;
-			var cpsLevel = 0;
-			//Initilize interval functions
-			setInterval(processCashps,1000);//Every second run processCashps
-			setInterval(saveData,5000);//Save data every 5 seconds
-			setInterval(dbRandomNews,10000);//Show random news every 10 seconds
-			//Building initilizations
-			class Building{
-				constructor(name,owned,price,cps,description)
-				{
-					this.name=name;
-					this.owned=owned;
-					this.price=price;
-					this.cps=cps;
-					this.description=description;
-				}
-			}
-			class BuildingUpgrade{
-				constructor(name,buildingIndex,description,price)
-				{
-					this.name=name;
-					this.buildingIndex=buildingIndex;
-					this.description=description;
-					this.price=price
-				}
-			}
-			
-			var Buildings = [
-			new Building("Make yourself smile",0,15,0.2,"An easy way to gain ☺ is to simply smile all by yourself; Give it a try!"),
-			new Building("Cute Kitties",0,100,1,"Cute kitties are easily a top 19 way to make someone smile. Just look at them!"),
-			new Building("Hugs",0,800,6,"One of the finest parts of life is a hug from a special someone. Sure would suck if you were single!"),
-			new Building("Free cookies at lunch",0,2000,63,"Y'know when you go to the lunch line and sooo badly want a cookie but you have no money in your account? Heres the solution!"),
-			new Building("Mechanical frown turners",0,15000,420,"The phrase \"turn that frown upside down!\" was really taken into account with this one!"),
-			new Building("Ginormous grinners",0,100000,3000,"ALL SMILE UP TO THE GREAT GRINNER AGREGATION. YOU CANNOT ESCAPE!"),
-			new Building("Fake smiles",0,900000,15000,"If you force people to smile, even while unh**py, by definition, you'll have more ☺!"),
-			new Building("Toe ticklers",0,5800000,250000,"If you're laughing you're smiling, and what forces your body to laugh? Tickling!")
-			];
-			var BuildingUpgrades = [
-			
-			]
-			
-			var buildingUpgradesOwned = [0,0,0,0,0,0,0,0];
-			var buildingUpgradeNames = ["Harder, shinier teeth","More kitty eye shines","Tighter hugs","More chocolate chips","Gear Oil","Slightly larger grins","Anti-depression campaigns","More feathers"];
-			var buildingUpgradePrices = [100,500,10000,30000,100000,500000,3000000,28000000,12000000];
-			var buildingUpgradeDescriptions = [
-			"If you smiler harder and brigher, youll cause more others to smile! (also upgrades your click)",
-			"Somehow the kitties can become even cuter. The internet is gonna love this!",
-			"This upgrade actually just makes your imagination of being hugged better. We all know you're single!",
-			"A game about spending obscene amounts of currency on cookie upgrades? Never heard of it!",
-			"Oil up the gears of the frown turner. Ultimate turn action!",
-			"IT IS TOO LATE! ALL RESISTANCE IS FUTILE!",
-			"Why do all of these end in \"!\"? Depression isnt real!",
-			"Tickle harder with more feathers!"
-			];
-			
-			//Dialogue box initilizations
-			var dBInterval = -1;
-			var dBCurrentIndex = 0;
-			var dBRandomNews = ["Its time to smile!","Prepare your jaw muscles","Your mom makes you eat your greens","The news anchor looks unhappy :(","Depression rates are at an all time high!",
-			"Your freinds finally look happy to see you","Your neighbors wave to you across the street","Your smiling has influenced the locals","You're having a great day!","You get the day off today!",
-			"People everywhere are smiling","News Report: All divorced couples happily remarry","News Report: #1 song of this week is \"Happy!\"","New \"Smile Punk\" fad sweeps the nation!","Antidepresant copanies begin going out of buisuness",
-			"People are physically unable to stop grinning","News Report:Dead bodies begin reanimating their face muscles into smiles","News Report:S*d becomes the next curse word","News Report:All war completely ceases permanently","A new, happy-based religion sweeps the nation"];
-			var cashSuffixes = ["","K","M","B","T","Qd","Qn","Sx","Sp","Oc","No","De","Ud","DD"];
-			
-			onStartUp();
-			
-			function createBuildingToolTip(index)
-			{
-				let str ="<div id=\"toolTip"+index+"\"class=\"toolTip\"><h1 style=\"text-align: center;\">"+Buildings[index].name+"</h1><img src=\"Assets/ShopItem"+index+".png\" style=\"margin-left: 25%;margin-right: 25%;\"><h2 style=\"text-align: center;\">"+Buildings[index].description+"</h2><h2 id=\"building"+index+"toolTipCps\"class=\"toolTipCpsDisp\" style=\"text-align: center;\">(x ☺ per second)</h2><h2 style=\"text-align: center;\">Cost:</h2><h1 id=\"building"+index+"toolTipPrice\" style=\"font-size:30px;text-align: center;\">999999999☺</h1></div>"
-				document.getElementById("buildingToolTips").innerHTML+=str;
-			}
-			function createBuildingUpgradeToolTip(index)
-			{
-				let str = "<div id=\"toolTipUp"+index+"\"class=\"toolTipUp\"><h1 style=\"text-align: center;\">"+buildingUpgradeNames[index]+"</h1><img src=\"Assets/ShopItem"+index+".png\" style=\"margin-left: 25%;margin-right: 25%;\">;<h2 style=\"text-align: center;\">"+buildingUpgradeDescriptions[index]+"</h2><h2 style=\"text-align: center;\">Cost:</h2><h1 id=\"building"+index+"upToolTipPrice\" style=\"font-size:30px;text-align: center;\"></h1></div>";
-				document.getElementById("upgradeToolTips").innerHTML+=str;
-			}
-			
-			
-			function onStartUp()
-			{
-				
-				for(let i = 0; i < Buildings.length; i++)
-				{
-					createBuildingToolTip(i);
-					createBuildingUpgradeToolTip(i);
-				}
-				loadData();
-				updateCashDisplay();
-				dbRandomNews();
-			}
-			
-			function dbRandomNews()
-			{							
-				startDialougeBox(dBRandomNews[Math.max(Math.floor(Math.random() * 4+cpsLevel*5,dBRandomNews.length-1))]);
-			}
-			
-			function cashToString(num)
-			{
-				if(num<1000)
-				{
-					return String(num)+ "☺";
-				}
-				
-				let str = String(Math.floor(num));
-				let ret = str.substring(0,str.length%3)+"."+str.substring(str.length%3,3)+String(cashSuffixes[Math.floor((str.length-1)/3)])+"☺";
-				if(ret.indexOf(".")==0)
-				{
-					return ret.substring(1,ret.length);
-				}
-				return ret;
-			}
-			
-			function onClickMain()
-			{
-				cash += Math.pow(2,buildingUpgradesOwned[0]);
-				updateCashDisplay();
-			}
-			
-			function saveData()
-			{
-				localStorage.setItem("cash",cash);
-				localStorage.setItem("cashps",cashps);
-				localStorage.setItem("cpsLevel",cpsLevel);
-				let buildings = [];
-				let buildingPrices = [];
-				let buildingCashps = [];
-				for(let i = 0; i < Buildings.length; i++)
-				{
-					buildings[i] = Buildings[i].owned;
-					buildingPrices[i] = Buildings[i].price;
-					buildingCashps[i] = Buildings[i].cps;
-				}
-				localStorage.setItem("buildings",buildings);
-				localStorage.setItem("buildingPrices",buildingPrices);
-				localStorage.setItem("buildingCashps",buildingCashps);
-				localStorage.setItem("buildingUpgradesOwned",buildingUpgradesOwned);
-				localStorage.setItem("buildingUpgradePrices",buildingUpgradePrices);
-			}
-			
-			function resetData()
-			{
-				localStorage.setItem("cash",0);
-				localStorage.setItem("cashps",0);
-				localStorage.setItem("cpsLevel",0);
-				localStorage.setItem("buildings",[0,0,0,0,0,0,0,0]);
-				localStorage.setItem("buildingPrices",[15,  100,800,2000,15000,100000,900000,5800000]);
-				localStorage.setItem("buildingCashps",[0.2, 1,  6,  63,  420,  3000,  15000, 200000]);
-				localStorage.setItem("buildingUpgradesOwned",[0,0,0,0,0,0,0,0]);
-				localStorage.setItem("buildingUpgradePrices",[100,500,10000,30000,100000,500000,3000000,28000000,12000000]);
-				loadData();
-			}
-			
-			function loadData()
-			{
-				if(localStorage.getItem("cash"))
-				{
-					cash = Number(localStorage.getItem("cash"));
-					cashps = Number(localStorage.getItem("cashps"));
-					cpsLevel = Number(localStorage.getItem("cpsLevel"));
-					updateCashDisplay();
-					//arrays
-					for(let i = 0; i < Buildings.length; i++)
-					{
-						Buildings[i].owned = stringToNumberArray(localStorage.getItem("buildings"))[i];
-						Buildings[i].price = stringToNumberArray(localStorage.getItem("buildingPrices"))[i];
-						Buildings[i].cps = stringToNumberArray(localStorage.getItem("buildingCashps"))[i];	
-					}
-					buildingUpgradesOwned = stringToNumberArray(localStorage.getItem("buildingUpgradesOwned"));
-					buildingUpgradePrices = stringToNumberArray(localStorage.getItem("buildingUpgradePrices"));	
-					
-				}
-				for(let i = 0; i < Buildings.length; i++)
-				{
-					updateShopName(i);
-					updateUpgradeName(i);
-				}
-			}
-			
-			function stringToNumberArray(str)
-			{
-				let arr = str.split(",");
-				for(let i = 0; i < arr.length; i++)
-				{
-					arr[i] = Number(arr[i]);
-				}
-				return arr;
-			}
-			
-			function updateCashDisplay()
-			{	
-				if(document.getElementById("mainCashDisplay").innerHTML!=cashToString(Math.floor(cash)))
-				{
-					document.getElementById('mainCashDisplay').style.animation = "none";
-					document.getElementById('mainCashDisplay').offsetHeight;
-					document.getElementById('mainCashDisplay').style.animation = "buldgeText 0.25s";	
-					document.getElementById("mainCashDisplay").innerHTML = cashToString(Math.floor(cash));
-				}
-				document.getElementById("cashpsDisplay").innerHTML = cashToString(Math.floor(cashps*10)/10)+" per second";					
-			}		
-			function updateShopName(buildingIndex)
-			{
-				document.getElementById("building"+(buildingIndex)+"btn").innerHTML = Buildings[buildingIndex].name + "<br>" + cashToString(Buildings[buildingIndex].price);
-				document.getElementById("building"+(buildingIndex)+"toolTipPrice").innerHTML = cashToString(Buildings[buildingIndex].price) + "<br> Owned:<br>" + Buildings[buildingIndex].owned;
-				document.getElementById("building"+(buildingIndex)+"toolTipCps").innerHTML = "(" + cashToString(Buildings[buildingIndex].cps*Math.pow(2,buildingUpgradesOwned[buildingIndex])) + " per second)";
-			}
-			function updateUpgradeName(buildingIndex)
-			{
-				document.getElementById("building"+(buildingIndex)+"upbtn").innerHTML = buildingUpgradeNames[buildingIndex] + "<br>" + cashToString(buildingUpgradePrices[buildingIndex]);
-				document.getElementById("building"+(buildingIndex)+"upToolTipPrice").innerHTML = cashToString(buildingUpgradePrices[buildingIndex]) + "<br> Owned:<br>" + buildingUpgradesOwned[buildingIndex];
-			}
-			function processCashps()
-			{
-				cash+=cashps;
-				updateCashDisplay();
-			}					
-			function startDialougeBox(text)
-			{									
-				dBCurrentIndex = 0;
-				if(dBInterval!=-1)
-				{
-					clearInterval(dBInterval);
-					dBInterval=-1;
-				}
-				dBInterval=setInterval(dialougeBoxUpdate,15,text);
-				
-			}
-			function dialougeBoxUpdate(text)
-			{	
-				dBCurrentIndex++;
-				document.getElementById("DialougeAreaText").innerHTML = text.substring(0,dBCurrentIndex);
-				if(dBCurrentIndex>=text.length)
-				{				
-					clearInterval(dBInterval);
-					dBInterval=-1;
-				}
-				
-			}			
-			function recalculateCps()
-			{
-				cashps = 0;				
-					
-				for(let i = 0; i < Buildings.length; i++)
-				{
-					cashps+=(Buildings[i].owned*(Buildings[i].cps*Math.pow(2,buildingUpgradesOwned[i])));
-				}
-					
-				cpsLevel=String(Math.round(cashps)).length;
+<html>
 
-				document.getElementById('cashpsDisplay').style.animation = "none";
-				document.getElementById('cashpsDisplay').offsetHeight;
-				document.getElementById('cashpsDisplay').style.animation = "buldgeText 0.25s";	
-			}			
-			function attemptPurchase(buildingIndex)
-			{
-				if(cash>=Buildings[buildingIndex].price)
-				{
-					cash -= Buildings[buildingIndex].price;
-					var mult = 1.27;
-					
-					Buildings[buildingIndex].price=Math.round(Buildings[buildingIndex].price*mult);
-					
-					Buildings[buildingIndex].owned++;
-					recalculateCps();
-					updateShopName(buildingIndex);
-					updateCashDisplay();
-				}
-			}			
-			function attemptUpgrade(buildingIndex)
-			{
-				if(cash>=buildingUpgradePrices[buildingIndex])
-				{
-					cash -= buildingUpgradePrices[buildingIndex];
-					var mult = 12.5;
-					
-					buildingUpgradePrices[buildingIndex]=Math.round(buildingUpgradePrices[buildingIndex]*mult);
-					
-					buildingUpgradesOwned[buildingIndex]++;
-					recalculateCps();
-					updateUpgradeName(buildingIndex);
-					updateCashDisplay();
-				}
-			}
+	<head>
+		
+		<title>Smiley Clicker</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	
+	<body>
+		
+		<div id="TopMiddleJunk">
+				<h1 id="mainTitle"> Smiley Clicker </h1>
+				<h2 id="mainCashDisplay"> 0☺ </h2>
+				<h2 id="cashpsDisplay"> 0☺ per second </h2>
+				<button id="mainClicker" onclick="onClickMain()"><img src="Assets/MainButton.png" style="height:256px;width:256px;animation-duration:1;animation-fill-mode:forwards"></button>
+		</div>
+
+		<div id="buildingToolTips">
+	
+		</div>
+		
+		<h1 style="position:fixed;font-size:40px;text-align: center;background-color:black;right:0px;width:12.5%;font-align:center;background-color:#080913;border-style: solid;border-width:1%;border-radius:15px;">OBJECT SHOP</h1>
+		<div id="Shop">
+			<button id="building0btn" class="shopItem" onclick="attemptPurchase(0)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem0.png);background-size:100% 100%;"></button>
+			<button id="building1btn" class="shopItem" onclick="attemptPurchase(1)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem1.png);background-size:100% 100%;"></button>
+			<button id="building2btn" class="shopItem" onclick="attemptPurchase(2)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem2.png);background-size:100% 100%;"></button>
+			<button id="building3btn" class="shopItem" onclick="attemptPurchase(3)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem3.png);background-size:100% 100%;"></button>
+			<button id="building4btn" class="shopItem" onclick="attemptPurchase(4)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem4.png);background-size:100% 100%;"></button>
+			<button id="building5btn" class="shopItem" onclick="attemptPurchase(5)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem5.png);background-size:100% 100%;"></button>
+			<button id="building6btn" class="shopItem" onclick="attemptPurchase(6)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem6.png);background-size:100% 100%;"></button>
+			<button id="building7btn" class="shopItem" onclick="attemptPurchase(7)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem7.png);background-size:100% 100%;"></button>
+		</div>
+		
+		<div id="upgradeToolTips">
+			
+		</div>
+		
+		<h1 style="position:fixed;font-size:40px;text-align: center;background-color:black;left:0;width:12.5%;font-align:center;background-color:#080913;border-style: solid;border-width:1%;border-radius:15px;">UPGRADE SHOP</h1>
+		
+		<div id="UpgradeShop">
+			<button id="building0upbtn" class="upgradeShopItem" onclick="attemptUpgrade(0)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem0.png);background-size:100% 100%;"></button>
+			<button id="building1upbtn" class="upgradeShopItem" onclick="attemptUpgrade(1)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem1.png);background-size:100% 100%;"></button>
+			<button id="building2upbtn" class="upgradeShopItem" onclick="attemptUpgrade(2)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem2.png);background-size:100% 100%;"></button>
+			<button id="building3upbtn" class="upgradeShopItem" onclick="attemptUpgrade(3)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem3.png);background-size:100% 100%;"></button>
+			<button id="building4upbtn" class="upgradeShopItem" onclick="attemptUpgrade(4)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem4.png);background-size:100% 100%;"></button>
+			<button id="building5upbtn" class="upgradeShopItem" onclick="attemptUpgrade(5)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem5.png);background-size:100% 100%;"></button>
+			<button id="building6upbtn" class="upgradeShopItem" onclick="attemptUpgrade(6)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem6.png);background-size:100% 100%;"></button>
+			<button id="building7upbtn" class="upgradeShopItem" onclick="attemptUpgrade(7)" style="background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url(Assets/ShopItem7.png);background-size:100% 100%;"></button>
+		</div>
+		
+		<div id="DialougeArea">
+			<h2 id="DialougeAreaText"style="position:relative;left:2%;top:0.5%;right:2%;font-size:30px"></h2>easter egg :)
+		</div>	
+		
+		
+		
+	</body>
+<script src="main.js"></script>
+</html>
