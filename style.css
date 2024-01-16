@@ -1,0 +1,253 @@
+		body {
+			background-image: url("Assets/Background.png");
+			animation-name: backgroundShenanigans;
+			animation-duration: 5s;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			}
+		@keyframes backgroundShenanigans{
+			0%{background-position:0px 0px;}
+			100%{background-position:0px 128px;}
+		}
+		h1 {
+			font-family:"Comic Sans MS";
+			color:#c8e3f1;
+		}
+		h2 {
+			font-family:"Comic Sans MS";
+			color:#c8e3f1;
+		}
+		#TopMiddleJunk
+		{
+			position:fixed;
+			left:25%;
+			text-align: center;
+			font-size:20;
+			width:50%;
+		}
+		#Shop
+		{
+			-ms-overflow-style: none; /* for Internet Explorer, Edge */
+			scrollbar-width: none;
+			position:fixed;
+			width: 12.5%;
+            height: 80%;
+			right:0%;
+			top:20%;
+			overflow-y: scroll;
+			background-color:#080913;
+			border-style: solid;
+			border-width:1%;
+			border-radius:15px;
+		}
+		#Shop::-webkit-scrollbar {
+		display: none; /* for Chrome, Safari, and Opera */
+		}
+		#UpgradeShop
+		{
+			-ms-overflow-style: none; /* for Internet Explorer, Edge */
+			scrollbar-width: none;
+			position:fixed;
+			width: 12.5%;
+            height: 80%;
+			left:0%;
+			top:20%;
+			overflow-y: scroll;
+			background-color:#080913;
+			border-style: solid;
+			border-width:1%;
+			border-radius:15px;
+		}
+		#UpgradeShop::-webkit-scrollbar {
+		display: none; /* for Chrome, Safari, and Opera */
+		}
+		.shopItem
+		{
+			width:100%;
+			height:32%;
+			font-size:25px;
+			text-align: center;
+			color:#c8e3f1;
+			border-radius:5%;			
+			
+			
+		}
+		.upgradeShopItem
+		{
+			left:0%;
+			width:100%;
+			height:32%;
+			font-size:25px;
+			text-align: center;
+			color:#c8e3f1;
+			border-radius:5%;	
+		}
+		body:has(#Shop>#building0btn:hover)>#buildingToolTips>#toolTip0{
+			visibility: visible;
+		}
+		body:has(#Shop>#building1btn:hover)>#buildingToolTips>#toolTip1{
+			visibility: visible;
+		}
+		body:has(#Shop>#building2btn:hover)>#buildingToolTips>#toolTip2{
+			visibility: visible;
+		}
+		body:has(#Shop>#building3btn:hover)>#buildingToolTips>#toolTip3{
+			visibility: visible;
+		}
+		body:has(#Shop>#building4btn:hover)>#buildingToolTips>#toolTip4{
+			visibility: visible;
+		}
+		body:has(#Shop>#building5btn:hover)>#buildingToolTips>#toolTip5{
+			visibility: visible;
+		}
+		body:has(#Shop>#building6btn:hover)>#buildingToolTips>#toolTip6{
+			visibility: visible;
+		}
+		body:has(#Shop>#building7btn:hover)>#buildingToolTips>#toolTip7{
+			visibility: visible;
+		}
+		
+		body:has(#UpgradeShop>#building0upbtn:hover)>#upgradeToolTips>#toolTipUp0{
+			visibility: visible;
+		}
+		body:has(#UpgradeShop>#building1upbtn:hover)>#upgradeToolTips>#toolTipUp1{
+			visibility: visible;
+		}
+		body:has(#UpgradeShop>#building2upbtn:hover)>#upgradeToolTips>#toolTipUp2{
+			visibility: visible;
+		}
+		body:has(#UpgradeShop>#building3upbtn:hover)>#upgradeToolTips>#toolTipUp3{
+			visibility: visible;
+		}
+		body:has(#UpgradeShop>#building4upbtn:hover)>#upgradeToolTips>#toolTipUp4{
+			visibility: visible;
+		}
+		body:has(#UpgradeShop>#building5upbtn:hover)>#upgradeToolTips>#toolTipUp5{
+			visibility: visible;
+		}
+		body:has(#UpgradeShop>#building6upbtn:hover)>#upgradeToolTips>#toolTipUp6{
+			visibility: visible;
+		}
+		body:has(#UpgradeShop>#building7upbtn:hover)>#upgradeToolTips>#toolTipUp7{
+			visibility: visible;
+		}
+		
+		.toolTip
+		{
+			position:fixed;
+			right:13%;
+			bottom:20%;
+			visibility: hidden;
+			width:15%;
+			height:60%;
+			border-radius:25px;
+			background-color:#080913;
+			border-color:#c8e3f1;
+			border-width:4px;
+			border-style:solid;	
+		}
+		.toolTipUp
+		{
+			position:fixed;
+			left:13%;
+			bottom:20%;
+			visibility: hidden;
+			width:15%;
+			height:60%;
+			border-radius:25px;
+			background-color:#080913;
+			border-color:#c8e3f1;
+			border-width:4px;
+			border-style:solid;	
+		}
+		.toolTip img{
+			width:128px;
+			height:128px;
+			left: 50%;
+			right:0%;
+			top:0%;
+			
+		}
+		.toolTip>h2{
+
+			font-size:12px;
+			
+		}
+		.toolTip>h1{
+
+			font-size:25px;
+			bottom:5%;
+		}
+		.toolTipUp>img{
+			width:128px;
+			height:128px;
+			margin: auto;
+			display: block;
+			left:0%;
+			top:0%;
+			
+		}
+		.toolTipUp>h2{
+
+			font-size:12px;
+			
+		}
+		.toolTipUp>h1{
+
+			font-size:25px;
+			bottom:5%;
+		}
+		
+		#mainClicker {
+			background-color:rgba(255, 255, 255,0);
+			border-color:rgba(255, 255, 255,0);
+			img-align:center;
+			width:256px;
+			height:256px;
+		}
+		#DialougeArea {
+			position:fixed;
+			left:32.5%;
+			bottom:0.5%;		
+			width: 35%;
+            height: 40%;
+			border-radius:25px;
+			background-color:#080913;
+			border-color:#c8e3f1;
+			border-width:4px;
+			border-style:solid;
+		}
+		
+		#mainClicker:active {
+			animation-name: mainButtonDown;
+			animation-duration: 0.2s;
+			animation-fill-mode: forwards;
+		}
+		
+		@keyframes mainButtonDown{
+			0% {transform: scale(1);}
+			100% {transform: scale(0.8);}
+		}
+		
+		#mainTitle {
+			animation:5s ease 0s infinite normal none running titleBob;
+		}
+		.toolTipCpsDisp{
+			
+		}
+		
+		@keyframes titleBob{
+			0% {transform: scale(1);}
+			50% {transform: scale(1.3);}
+			100% {transform: scale(1);}
+		}
+		@keyframes mainButtonUp{
+			0% {transform: scale(0.8);}
+			100% {transform: scale(1);}
+			
+		}
+		@keyframes buldgeText{
+			0% {transform: scale(1.4);}
+			100% {transform: scale(1);}
+		}
+		
